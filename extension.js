@@ -39,12 +39,28 @@ ExtensionUtils.get_text_translator_extension = function() {
 function launch_extension_prefs(uuid) {
     let appSys = Shell.AppSystem.get_default();
     let app = appSys.lookup_app("gnome-shell-extension-prefs.desktop");
-    let info = app.get_app_info();
-    let timestamp = global.display.get_current_time_roundtrip();
-    info.launch_uris(
-        ["extension:///" + uuid],
-        global.create_app_launch_context(timestamp, -1)
-    );
+    if (app === null) {
+        log("fallback to dbus")
+        Gio.DBusProxy.new_for_bus(Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, null, "org.gnome.Shell", "/org/gnome/Shell", "org.gnome.Shell.Extensions", null, (dbus, _) => {
+            if (dbus === null) {
+                log("can't init dbus")
+            } else {
+                log("calling LaunchExtensionPrefs")
+                dbus.call_sync(
+                    "LaunchExtensionPrefs",
+                    GLib.Variant.new_tuple([ GLib.Variant.new_bytestring(uuid) ]),
+                    0, 1000, null
+                )
+            }
+        })
+    } else {
+        let info = app.get_app_info();
+        let timestamp = global.display.get_current_time_roundtrip();
+        info.launch_uris(
+            ["extension:///" + uuid],
+            global.create_app_launch_context(timestamp, -1)
+        );
+    }
 }
 
 const TIMEOUT_IDS = {
