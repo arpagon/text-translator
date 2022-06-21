@@ -25,14 +25,14 @@
         {
            "Google.Translate":{
               "default_source":"en",
-              "default_target":"ru",
+              "default_target":"es",
               "last_source":"",
               "last_target":"",
               "remember_last_lang": true
            },
            "Yandex.Translate":{
               "default_source":"en",
-              "default_target":"ru",
+              "default_target":"es",
               "last_source":"",
               "last_target":"",
               "remember_last_lang": true
