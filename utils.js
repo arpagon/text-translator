@@ -3,20 +3,14 @@
  * http://git.gnome.org/browse/gnome-shell-extensions/
  */
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+const { Gio, GLib, Soup } = imports.gi;
+
 const ExtensionUtils = imports.misc.extensionUtils;
-const Soup = imports.gi.Soup;
 const Clutter = imports.gi.Clutter;
 
-var _httpSession = new Soup.SessionAsync();
-Soup.Session.prototype.add_feature.call(
-    _httpSession,
-    new Soup.ProxyResolverDefault()
-);
-_httpSession.user_agent = "Gnome-Shell TextTranslator Extension";
-_httpSession.timeout = 5;
-
+let _httpSession = new Soup.Session();
+_httpSession.set_property('user-agent', "Gnome-Shell TextTranslator Extension");
+_httpSession.set_property('timeout', 5);
 var SETTINGS = getSettings();
 
 var ICONS = {
